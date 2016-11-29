@@ -198,6 +198,14 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
                 function.onCallBack(id+"");
             }
         });
+        mWebView.registerHandler("getUser", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                Log.i("wang","native->getUserId");
+                String json = "{\"id\":\"25\",\"name\":\"1226270181\",\"head\":\"sdsd\"}";
+                function.onCallBack(json);
+            }
+        });
 
         mWebView.registerHandler("finish", new BridgeHandler() {
             @Override
