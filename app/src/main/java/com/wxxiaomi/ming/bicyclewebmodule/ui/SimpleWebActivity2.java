@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -159,9 +160,19 @@ public class SimpleWebActivity2 extends BaseWebActivity2 {
                             return WebMethods.getInstance().sendPost(action.url, ParsMakeUtil.string2Map(params));
                         }
                     })
-                    .subscribe(new Action1<String>() {
+                    .subscribe(new Observer<String>() {
                         @Override
-                        public void call(String s) {
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(String s) {
                             function.onCallBack(s);
                         }
                     });

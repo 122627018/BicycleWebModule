@@ -9,6 +9,7 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.FuncN;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by 12262 on 2016/11/25.
@@ -97,7 +98,7 @@ public class CacheEngine {
         List<Observable<byte[]>> list = new ArrayList<>();
         final List<byte[]> result = new ArrayList<>();
         for(String item : path){
-            Observable<byte[]> localImg = getImage(item);
+            Observable<byte[]> localImg = getImage(item).subscribeOn(Schedulers.io());
             list.add(localImg);
         }
         return Observable.zip(list, new FuncN<List<byte[]>>() {

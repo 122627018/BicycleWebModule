@@ -13,8 +13,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.functions.FuncN;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by 12262 on 2016/11/23.
@@ -86,9 +88,13 @@ public class OssEngine {
                     public void onSuccess() {
                         subscriber.onNext("http://mttext.oss-cn-shanghai.aliyuncs.com/"+fileName);
                     }
-                });
+                })
+
+                ;
             }
-        });
+        })
+                .subscribeOn(Schedulers.io())
+                ;
     }
 
     public Observable<List<String>> upLoadObjs(Map<String,byte[]> objs){
