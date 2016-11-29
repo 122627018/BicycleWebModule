@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    tools:context="com.wxxiaomi.ming.bicyclewebmodule.MainActivity">
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="去web" />
+
+    <Button
+        android:id="@+id/btn_new_thread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="去web页面(new Thread)" />
+
+    <Button
+        android:id="@+id/btn_img_upload"
+        android:layout_width="wrap_content"
+        android:text="去图片上传activity"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_take_photo"
+        android:layout_width="wrap_content"
+        android:text="takePhoto"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_cache_base64"
+        android:layout_width="wrap_content"
+        android:text="去测试h5初级缓存系统"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_test1"
+        android:layout_width="wrap_content"
+        android:text="对整套系统进行测试"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_rx"
+        android:layout_width="wrap_content"
+        android:text="rx test"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_new_webview1"
+        android:layout_width="wrap_content"
+        android:text="webview新1"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_go_test_page"
+        android:layout_width="wrap_content"
+        android:text="直接去到测试页面"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_oom_test"
+        android:layout_width="wrap_content"
+        android:text="内存泄漏测试页面"
+        android:layout_height="wrap_content" />
+
+
+
+</LinearLayout>
