@@ -51,7 +51,7 @@ import rx.Observer;
 public abstract class BaseWebFragment extends Fragment {
     protected BridgeWebView mWebView;
     private ProgressDialog dialog;
-    AlertDialog alertDialog;
+    protected AlertDialog alertDialog;
     protected final int SHOW_LOADING_DIALOG = 1;
     protected final int CLOSE_LOADING_DIALOG = 2;
     protected Handler handler = new Handler(){

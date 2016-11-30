@@ -12,6 +12,7 @@ import com.wxxiaomi.ming.bicyclewebmodule.support.aliyun.STSGetter;
 import com.wxxiaomi.ming.bicyclewebmodule.ui.SimpleWebActivity;
 import com.wxxiaomi.ming.bicyclewebmodule.ui.SimpleWebActivity2;
 import com.wxxiaomi.ming.bicyclewebmodule.ui.SimpleWebActivity3;
+import com.wxxiaomi.ming.bicyclewebmodule.ui_refactor.WebActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_go_test_page;
     private Button btn_oom_test;
     private Button btn_new_thread;
+    private Button btn_go_new_web_act;
 
 
     @Override
@@ -110,6 +112,19 @@ public class MainActivity extends AppCompatActivity {
                 runNewThreadWebView();
             }
         });
+        btn_go_new_web_act = (Button) findViewById(R.id.btn_go_new_web_act);
+        btn_go_new_web_act.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                runNewWebAct();
+            }
+        });
+    }
+
+    private void runNewWebAct() {
+        Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("url",ConstantValue.SERVER_URL+"/app/topicList_1.html");
+        startActivity(intent);
     }
 
     private void runNewThreadWebView() {

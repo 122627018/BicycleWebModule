@@ -20,7 +20,9 @@ import com.github.lzyzsd.jsbridge.BridgeWebViewClient;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.leakcanary.RefWatcher;
 import com.wxxiaomi.ming.bicyclewebmodule.ConstantValue;
+import com.wxxiaomi.ming.bicyclewebmodule.MyApplication;
 import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.AlertAction;
 import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.DialogACtion;
 import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.DialogTypeAdapter;
@@ -413,5 +415,12 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = MyApplication.sRefWatcher;
+        refWatcher.watch(this);
     }
 }

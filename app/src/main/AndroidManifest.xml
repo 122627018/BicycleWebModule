@@ -21,22 +21,20 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.SimpleWebActivity"
-
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SimpleWebActivity2"
-
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SimpleWebActivity3"
             android:process=":remote"
-            android:screenOrientation="unspecified"
-             />
+            android:screenOrientation="unspecified" />
         <activity
             android:name=".ui.WebTabsActivity"
             android:screenOrientation="portrait" />
@@ -48,7 +46,8 @@
         <activity android:name=".RxActivity" />
         <activity android:name=".WebViewNewTry" />
         <activity android:name=".WebViewTry2Activity" />
-        <activity android:name=".OOMTestActivity"></activity>
+        <activity android:name=".OOMTestActivity" />
+        <activity android:name=".ui_refactor.WebActivity"></activity>
     </application>
 
 </manifest>
