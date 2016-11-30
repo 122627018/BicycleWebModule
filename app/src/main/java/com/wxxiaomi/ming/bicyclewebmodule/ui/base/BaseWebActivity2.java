@@ -420,7 +420,6 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RefWatcher refWatcher = MyApplication.sRefWatcher;
-        refWatcher.watch(this);
+
     }
 }

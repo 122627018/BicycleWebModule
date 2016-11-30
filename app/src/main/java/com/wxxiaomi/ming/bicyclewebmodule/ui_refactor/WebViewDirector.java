@@ -6,6 +6,7 @@ import android.util.Log;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 
 import com.github.lzyzsd.jsbridge.BridgeHandler;
 import com.github.lzyzsd.jsbridge.BridgeWebView;
@@ -20,15 +21,12 @@ import com.wxxiaomi.ming.bicyclewebmodule.action.forward.H5ACtion;
 import com.wxxiaomi.ming.bicyclewebmodule.action.forward.ManyH5Action;
 import com.wxxiaomi.ming.bicyclewebmodule.action.forward.NativeAction;
 import com.wxxiaomi.ming.bicyclewebmodule.support.cache.CacheEngine;
-import com.wxxiaomi.ming.bicyclewebmodule.ui.SimpleWebActivity2;
 import com.wxxiaomi.ming.bicyclewebmodule.ui.WebTabsActivity;
-import com.wxxiaomi.ming.bicyclewebmodule.ui.base.BaseWebActivity2;
 import com.wxxiaomi.ming.bicyclewebmodule.util.ParsMakeUtil;
 
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 
-import rx.Observer;
 import rx.functions.Action1;
 
 /**
@@ -36,11 +34,16 @@ import rx.functions.Action1;
  */
 
 public class WebViewDirector {
-    protected WebActionBuilder builder;
+    protected WebBuilder builder;
     protected BridgeWebView mWebView;
-    public WebViewDirector(WebActionBuilder builder){
+    public WebViewDirector(WebBuilder builder){
         this.builder = builder;
         mWebView = new BridgeWebView(builder.getContext());
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        mWebView.setLayoutParams(p);
     }
 
     public BridgeWebView getWview(){
@@ -53,15 +56,13 @@ public class WebViewDirector {
         if(!ConstantValue.isWebCacheOpen){
             mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         }
-        String url = getTargetUrl();
+        String url = builder.getTargetUrl();
         mWebView.loadUrl(url);
-
-        String data = builder.getActivity().getIntent().getStringExtra("data");
+        String data = builder.getComeData();
         mWebView.send(data==null?"":data, new CallBackFunction() {
             @Override
             public void onCallBack(String data) {
-//                doJsInitData(data);
-//                closeLoadingDialog();
+                builder.doJsInitData(data);
             }
         });
 
@@ -90,39 +91,39 @@ public class WebViewDirector {
         mWebView.registerHandler("forward", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-                handleForwardEvent(data,function);
+                builder.doForwardEvent(data,function);
             }
         });
 
         mWebView.registerHandler("dialog", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-//                handlerDialogAction(data);
+                builder.doDialogEvent(data);
             }
         });
 
 
-        mWebView.registerHandler("getUserId", new BridgeHandler() {
-            @Override
-            public void handler(String data, CallBackFunction function) {
-                int id = 25;
-                Log.i("wang","native->getUserId");
-                function.onCallBack(id+"");
-            }
-        });
-        mWebView.registerHandler("getUser", new BridgeHandler() {
-            @Override
-            public void handler(String data, CallBackFunction function) {
-                Log.i("wang","native->getUserId");
-                String json = "{\"id\":\"25\",\"name\":\"1226270181\",\"head\":\"sdsd\"}";
-                function.onCallBack(json);
-            }
-        });
+//        mWebView.registerHandler("getUserId", new BridgeHandler() {
+//            @Override
+//            public void handler(String data, CallBackFunction function) {
+//                int id = 25;
+//                Log.i("wang","native->getUserId");
+//                function.onCallBack(id+"");
+//            }
+//        });
+//        mWebView.registerHandler("getUser", new BridgeHandler() {
+//            @Override
+//            public void handler(String data, CallBackFunction function) {
+//                Log.i("wang","native->getUserId");
+//                String json = "{\"id\":\"25\",\"name\":\"1226270181\",\"head\":\"sdsd\"}";
+//                function.onCallBack(json);
+//            }
+//        });
 
         mWebView.registerHandler("finish", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-                handleFinishEvent(data);
+                builder.doFinishEvent(data);
             }
         });
 
@@ -136,66 +137,66 @@ public class WebViewDirector {
         mWebView.registerHandler("showLog", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
-                Log.i("wang","js->showLog:"+data);
+                builder.showLog(data);
             }
         });
     }
 
-    private void handleForwardEvent(String data, CallBackFunction function) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(ForwardAction.class, new ForwardTypeAdapter()).create();
-        ForwardAction forwardAction = gson.fromJson(data, ForwardAction.class);
-        Log.i("wang","forwardAction="+forwardAction.toString());
-        if(forwardAction instanceof H5ACtion){
-            H5ACtion action = (H5ACtion) forwardAction;
-            Intent intent = new Intent(builder.getActivity(),SimpleWebActivity2.class);
-            if(action.data!=""){
-                intent.putExtra("data",action.data);
-            }
-            if(action.page!=null){
-                intent.putExtra("url",action.page);
-            }
-            if(action.isReturn) {
-                String callBack = action.callBack;
-//                list.put(1,callBack);
-                builder.getActivity().startActivityForResult(intent, 1);
-            }else{
-                builder.getActivity().startActivity(intent);
-            }
-        }else if(forwardAction instanceof NativeAction){
-            NativeAction action = (NativeAction) forwardAction;
-            if(action.page.equals("UserInfoAct")){
-//                Intent intent = new Intent(this, UserInfoAct.class);
-//                intent.putExtra("value",action.data);
-//                startActivity(intent);
-            }
-        }else if(forwardAction instanceof ManyH5Action){
-            ManyH5Action action = (ManyH5Action) forwardAction;
-            Log.i("wang","action:"+action.toString());
-            Intent intent = new Intent(builder.getActivity(), WebTabsActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("action",action);
-            intent.putExtra("value",bundle);
-            builder.getActivity().startActivity(intent);
-        }
-
-    }
-
-    private void handleFinishEvent(String data) {
-        Map<String, String> map = ParsMakeUtil.string2Map(data);
-        if(map.get("isReturn")!=null&&map.get("isReturn").equals("true")){
-            String pars = map.get("data");
-            Intent intent = new Intent();
-            intent.putExtra("value",pars);
-            builder.getActivity().setResult(1,intent);
-            builder.getActivity().finish();
-        }else{
-            builder.getActivity().finish();
-        }
-    }
-
-    public String getTargetUrl(){
-        return builder.getActivity().getIntent().getStringExtra("url");
-    }
+//    private void handleForwardEvent(String data, CallBackFunction function) {
+//        Gson gson = new GsonBuilder().registerTypeAdapter(ForwardAction.class, new ForwardTypeAdapter()).create();
+//        ForwardAction forwardAction = gson.fromJson(data, ForwardAction.class);
+//        Log.i("wang","forwardAction="+forwardAction.toString());
+//        if(forwardAction instanceof H5ACtion){
+//            H5ACtion action = (H5ACtion) forwardAction;
+//            Intent intent = new Intent(builder.getActivity(),builder.getActivity().getClass());
+//            if(action.data!=""){
+//                intent.putExtra("data",action.data);
+//            }
+//            if(action.page!=null){
+//                intent.putExtra("url",action.page);
+//            }
+//            if(action.isReturn) {
+//                String callBack = action.callBack;
+////                list.put(1,callBack);
+//                builder.getActivity().startActivityForResult(intent, 1);
+//            }else{
+//                builder.getActivity().startActivity(intent);
+//            }
+//        }else if(forwardAction instanceof NativeAction){
+//            NativeAction action = (NativeAction) forwardAction;
+//            if(action.page.equals("UserInfoAct")){
+////                Intent intent = new Intent(this, UserInfoAct.class);
+////                intent.putExtra("value",action.data);
+////                startActivity(intent);
+//            }
+//        }else if(forwardAction instanceof ManyH5Action){
+//            ManyH5Action action = (ManyH5Action) forwardAction;
+//            Log.i("wang","action:"+action.toString());
+//            Intent intent = new Intent(builder.getActivity(), WebTabsActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("action",action);
+//            intent.putExtra("value",bundle);
+//            builder.getActivity().startActivity(intent);
+//        }
+//
+//    }
+//
+//    private void handleFinishEvent(String data) {
+//        Map<String, String> map = ParsMakeUtil.string2Map(data);
+//        if(map.get("isReturn")!=null&&map.get("isReturn").equals("true")){
+//            String pars = map.get("data");
+//            Intent intent = new Intent();
+//            intent.putExtra("value",pars);
+//            builder.getActivity().setResult(1,intent);
+//            builder.getActivity().finish();
+//        }else{
+//            builder.getActivity().finish();
+//        }
+//    }
+//
+//    public String getTargetUrl(){
+//        return builder.getActivity().getIntent().getStringExtra("url");
+//    }
 
     /**
      * 自定义的WebViewClient
@@ -207,19 +208,21 @@ public class WebViewDirector {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+
             if(url.contains("http://localhost")){
-                String path = "";
-                final WebResourceResponse[] response = {null};
-                path = url.replace("http://localhost","");
-                Log.i("wang","path:"+path);
-                CacheEngine.getInstance().getImage(path)
-                        .subscribe(new Action1<byte[]>() {
-                            @Override
-                            public void call(byte[] bytes) {
-                                response[0] = new WebResourceResponse("image/png", "UTF-8", new ByteArrayInputStream(bytes));
-                            }
-                        });
-                return  response[0];
+//                String path = "";
+//                final WebResourceResponse[] response = {null};
+//                path = url.replace("http://localhost","");
+//                Log.i("wang","path:"+path);
+//                CacheEngine.getInstance().getImage(path)
+//                        .subscribe(new Action1<byte[]>() {
+//                            @Override
+//                            public void call(byte[] bytes) {
+//                                response[0] = new WebResourceResponse("image/png", "UTF-8", new ByteArrayInputStream(bytes));
+//                            }
+//                        });
+//                return  response[0];
+                return  builder.doInterceptRequest(view, url);
             }else {
                 return super.shouldInterceptRequest(view, url);
             }

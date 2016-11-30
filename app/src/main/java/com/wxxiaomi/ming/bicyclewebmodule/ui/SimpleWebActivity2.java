@@ -17,6 +17,8 @@ import com.github.lzyzsd.jsbridge.BridgeHandler;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.leakcanary.RefWatcher;
+import com.wxxiaomi.ming.bicyclewebmodule.MyApplication;
 import com.wxxiaomi.ming.bicyclewebmodule.R;
 import com.wxxiaomi.ming.bicyclewebmodule.action.net.SendUpAction;
 import com.wxxiaomi.ming.bicyclewebmodule.action.ui.UiAction;
@@ -64,6 +66,18 @@ public class SimpleWebActivity2 extends BaseWebActivity2 {
         String url = getIntent().getStringExtra("url");
         mWebView.getSettings().setAllowFileAccess(true);
         mWebView.loadUrl(url);
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                SimpleWebActivity2.this.imgDatas=new ArrayList<String>();
+//                try {
+//                    sleep(20000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }.start();
     }
 
     @Override
@@ -290,6 +304,9 @@ public class SimpleWebActivity2 extends BaseWebActivity2 {
             util.cancel();
             util = null;
         }
+       // Log.i("leak","onDestroy()");
+        RefWatcher refWatcher = MyApplication.sRefWatcher;
+        refWatcher.watch(this);
     }
 
 

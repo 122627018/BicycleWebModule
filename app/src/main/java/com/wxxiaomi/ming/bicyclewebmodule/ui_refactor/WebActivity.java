@@ -1,5 +1,6 @@
 package com.wxxiaomi.ming.bicyclewebmodule.ui_refactor;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,11 +25,7 @@ public class WebActivity extends AppCompatActivity {
         content = (LinearLayout) findViewById(R.id.content);
         director = new WebViewDirector(new MyBuilderImpl(this));
         BridgeWebView wview = director.getWview();
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        wview.setLayoutParams(p);
+
         content.addView(wview);
        // wview.loadUrl("http://www.baidu.com");
         director.openInit();
@@ -39,8 +36,13 @@ public class WebActivity extends AppCompatActivity {
     protected void onDestroy() {
         //director = null;
         super.onDestroy();
-        Log.i("wang","onDestroy");
-//        RefWatcher refWatcher = MyApplication.getRefWatcher(this);
-//        refWatcher.watch(this);
+//        Log.i("wang","onDestroy");
+        RefWatcher refWatcher = MyApplication.sRefWatcher;
+        refWatcher.watch(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

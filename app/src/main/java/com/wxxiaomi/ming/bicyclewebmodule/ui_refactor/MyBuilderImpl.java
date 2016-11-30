@@ -1,7 +1,11 @@
 package com.wxxiaomi.ming.bicyclewebmodule.ui_refactor;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
 
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.wxxiaomi.ming.bicyclewebmodule.service.WebMethods;
@@ -16,22 +20,18 @@ import rx.Observer;
  * Created by Administrator on 2016/11/30.
  */
 
-public class MyBuilderImpl implements WebActionBuilder {
-    private Activity activity;
+public class MyBuilderImpl implements WebBuilder {
+    private Context context;
 
-    public MyBuilderImpl(Activity activity) {
-        this.activity = activity;
+    public MyBuilderImpl(Context context) {
+        this.context = context;
     }
 
     @Override
     public Context getContext() {
-        return activity;
+        return context;
     }
 
-    @Override
-    public Activity getActivity() {
-        return activity;
-    }
 
     @Override
     public void doGet(String data, final CallBackFunction function) {
@@ -71,6 +71,46 @@ public class MyBuilderImpl implements WebActionBuilder {
                         function.onCallBack(s);
                     }
                 });
+    }
+
+    @Override
+    public String getTargetUrl() {
+        return ((AppCompatActivity)context).getIntent().getStringExtra("url");
+    }
+
+    @Override
+    public void doJsInitData(String data) {
+
+    }
+
+    @Override
+    public void doForwardEvent(String data, CallBackFunction function) {
+
+    }
+
+    @Override
+    public void doDialogEvent(String data) {
+
+    }
+
+    @Override
+    public void doFinishEvent(String data) {
+
+    }
+
+    @Override
+    public WebResourceResponse doInterceptRequest(WebView view, String url) {
+        return null;
+    }
+
+    @Override
+    public String getComeData() {
+        return null;
+    }
+
+    @Override
+    public void showLog(String data) {
+
     }
 
     /**
