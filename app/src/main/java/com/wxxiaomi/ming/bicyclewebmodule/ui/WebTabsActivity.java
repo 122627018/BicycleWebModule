@@ -49,7 +49,6 @@ public class WebTabsActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         action = (ManyH5Action) getIntent().getBundleExtra("value").get("action");
-        Log.i("wang","action:"+action.toString());
         toolbar.setTitle(action.title);
         list_fragment = new ArrayList<Fragment>();
         TopicItemFragment = new WebFragment();

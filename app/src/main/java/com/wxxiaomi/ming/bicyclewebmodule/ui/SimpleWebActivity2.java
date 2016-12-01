@@ -66,18 +66,6 @@ public class SimpleWebActivity2 extends BaseWebActivity2 {
         String url = getIntent().getStringExtra("url");
         mWebView.getSettings().setAllowFileAccess(true);
         mWebView.loadUrl(url);
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                SimpleWebActivity2.this.imgDatas=new ArrayList<String>();
-//                try {
-//                    sleep(20000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        }.start();
     }
 
     @Override

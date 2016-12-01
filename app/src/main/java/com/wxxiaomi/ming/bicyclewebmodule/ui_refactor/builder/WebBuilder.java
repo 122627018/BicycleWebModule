@@ -1,10 +1,12 @@
-package com.wxxiaomi.ming.bicyclewebmodule.ui_refactor;
+package com.wxxiaomi.ming.bicyclewebmodule.ui_refactor.builder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.ViewGroup;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
+import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 
 /**
@@ -34,4 +36,8 @@ public interface WebBuilder {
     String getComeData();
 
     void showLog(String data);
+
+    BridgeWebView buildWebView();
+
+    ViewGroup getContentView();
 }

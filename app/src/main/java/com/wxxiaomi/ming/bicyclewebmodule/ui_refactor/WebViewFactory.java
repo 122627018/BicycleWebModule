@@ -8,9 +8,9 @@ import com.github.lzyzsd.jsbridge.BridgeWebView;
 
 public class WebViewFactory {
 
-    public static BridgeWebView create(WebBuilder builder){
-        return new WebViewDirector(builder).getWview();
-    }
+//    public static BridgeWebView create(WebBuilder builder){
+//        return new WebDirector(builder).getWview();
+//    }
 
 
 }
