@@ -72,6 +72,18 @@
         android:text="内存泄漏测试页面"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/btn_go_new_web_act"
+        android:layout_width="wrap_content"
+        android:text="测试重构后的webactivity"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_go_new_web_act2"
+        android:layout_width="wrap_content"
+        android:text="测试再次重构的webactivity"
+        android:layout_height="wrap_content" />
+
 
 
 </LinearLayout>

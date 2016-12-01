@@ -17,6 +17,8 @@ import com.github.lzyzsd.jsbridge.BridgeHandler;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.leakcanary.RefWatcher;
+import com.wxxiaomi.ming.bicyclewebmodule.MyApplication;
 import com.wxxiaomi.ming.bicyclewebmodule.R;
 import com.wxxiaomi.ming.bicyclewebmodule.action.net.SendUpAction;
 import com.wxxiaomi.ming.bicyclewebmodule.action.ui.UiAction;
@@ -290,6 +292,9 @@ public class SimpleWebActivity2 extends BaseWebActivity2 {
             util.cancel();
             util = null;
         }
+       // Log.i("leak","onDestroy()");
+        RefWatcher refWatcher = MyApplication.sRefWatcher;
+        refWatcher.watch(this);
     }
 
 

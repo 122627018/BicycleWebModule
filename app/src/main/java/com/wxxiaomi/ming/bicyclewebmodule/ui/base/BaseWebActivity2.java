@@ -20,7 +20,9 @@ import com.github.lzyzsd.jsbridge.BridgeWebViewClient;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.leakcanary.RefWatcher;
 import com.wxxiaomi.ming.bicyclewebmodule.ConstantValue;
+import com.wxxiaomi.ming.bicyclewebmodule.MyApplication;
 import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.AlertAction;
 import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.DialogACtion;
 import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.DialogTypeAdapter;
@@ -88,9 +90,7 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
     }
 
     private void initCommonUI() {
-        dialog = new ProgressDialog(BaseWebActivity2.this);
-        dialog.setTitle("请等待");//设置标题
-        dialog.setMessage("正在加载");
+
         showLoadingDialog();
     }
     public void showLoadingDialog(){
@@ -196,6 +196,14 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
                 int id = 25;
                 Log.i("wang","native->getUserId");
                 function.onCallBack(id+"");
+            }
+        });
+        mWebView.registerHandler("getUser", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                Log.i("wang","native->getUserId");
+                String json = "{\"id\":\"25\",\"name\":\"1226270181\",\"head\":\"sdsd\"}";
+                function.onCallBack(json);
             }
         });
 
@@ -405,5 +413,11 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

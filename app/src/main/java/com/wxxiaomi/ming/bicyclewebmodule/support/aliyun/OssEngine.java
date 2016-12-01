@@ -6,6 +6,7 @@ import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
 import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
+import com.wxxiaomi.ming.bicyclewebmodule.ConstantValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class OssEngine {
     public void initOssEngine(Context ct){
         if(!isInit){
             String endpoint = "http://oss-cn-shanghai.aliyuncs.com";
-            String stsServer = "http://192.168.1.46:8080/OssTokenGetServer/Oss";
+            String stsServer = ConstantValue.OSS_MY_URL;
             OSSCredentialProvider credentialProvider  = new STSGetter(stsServer);;
             String bucket = "mttext";
             ClientConfiguration conf = new ClientConfiguration();

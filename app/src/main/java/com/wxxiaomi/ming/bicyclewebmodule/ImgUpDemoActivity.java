@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.squareup.leakcanary.RefWatcher;
 import com.wxxiaomi.ming.bicyclewebmodule.support.aliyun.OssEngine;
 import com.wxxiaomi.ming.bicyclewebmodule.support.aliyun.OssService;
+import com.wxxiaomi.ming.bicyclewebmodule.ui_refactor.Demo;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,58 +37,69 @@ public class ImgUpDemoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_img_up_demo);
+
         btn_img = (Button) findViewById(R.id.btn_img);
         et_img_path = (EditText) findViewById(R.id.et_img_path);
-        btn_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Map<String,String> pars = new HashMap<>();
-//                for(int i=0;i<5;i++){
-//                    UUID uuid = UUID.randomUUID();
+        Demo.getInstance(this).demo(et_img_path);
+//        btn_img.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Map<String,String> pars = new HashMap<>();
+////                for(int i=0;i<5;i++){
+////                    UUID uuid = UUID.randomUUID();
+////                    String fileName =uuid+".jpg";
+////                    pars.put(fileName,imgPath);
+////                }
+////                OssEngine.getInstance().upLoadImages(pars)
+////                        .subscribe(new Observer<List<String>>() {
+////                            @Override
+////                            public void onCompleted() {
+////
+////                            }
+////
+////                            @Override
+////                            public void onError(Throwable e) {
+////
+////                            }
+////
+////                            @Override
+////                            public void onNext(List<String> results) {
+////                                for(int i=0;i<results.size();i++){
+////                                    Log.i("wang","results:"+results.get(i));
+////                                }
+////                            }
+////                        });
+//                UUID uuid = UUID.randomUUID();
 //                    String fileName =uuid+".jpg";
-//                    pars.put(fileName,imgPath);
-//                }
-//                OssEngine.getInstance().upLoadImages(pars)
-//                        .subscribe(new Observer<List<String>>() {
+//
+//                OssEngine.getInstance().uploadImage(fileName,imgPath)
+//                        .subscribe(new Action1<String>() {
 //                            @Override
-//                            public void onCompleted() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onNext(List<String> results) {
-//                                for(int i=0;i<results.size();i++){
-//                                    Log.i("wang","results:"+results.get(i));
-//                                }
+//                            public void call(String s) {
+//                                Log.i("wang","results:"+s);
 //                            }
 //                        });
-                UUID uuid = UUID.randomUUID();
-                    String fileName =uuid+".jpg";
+//            }
+//        });
+//        imageView = (ImageView) findViewById(R.id.imageview);
+//        String path = et_img_path.getText().toString().trim();
+//        imgPath = path;
+//        try {
+//            FileInputStream fis = new FileInputStream(path);
+//            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+//            imageView.setImageBitmap(bitmap);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        OssEngine.getInstance().initOssEngine(this);
+    }
 
-                OssEngine.getInstance().uploadImage(fileName,imgPath)
-                        .subscribe(new Action1<String>() {
-                            @Override
-                            public void call(String s) {
-                                Log.i("wang","results:"+s);
-                            }
-                        });
-            }
-        });
-        imageView = (ImageView) findViewById(R.id.imageview);
-        String path = et_img_path.getText().toString().trim();
-        imgPath = path;
-        try {
-            FileInputStream fis = new FileInputStream(path);
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);
-            imageView.setImageBitmap(bitmap);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        OssEngine.getInstance().initOssEngine(this);
+    @Override
+    protected void onDestroy() {
+        //director = null;
+        super.onDestroy();
+       // Log.i("wang","onDestroy");
+        RefWatcher refWatcher = MyApplication.sRefWatcher;
+        refWatcher.watch(this);
     }
 }
