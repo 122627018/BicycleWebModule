@@ -1,19 +1,24 @@
-package com.wxxiaomi.ming.bicyclewebmodule.ui_refactor.builder;
+package com.wxxiaomi.ming.bicyclewebmodule.ui_3.builder;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
 
-import com.github.lzyzsd.jsbridge.BridgeWebView;
 import com.github.lzyzsd.jsbridge.CallBackFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.AlertAction;
+import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.DialogACtion;
+import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.DialogTypeAdapter;
+import com.wxxiaomi.ming.bicyclewebmodule.action.dialog.LoadingAction;
 import com.wxxiaomi.ming.bicyclewebmodule.action.forward.ForwardAction;
 import com.wxxiaomi.ming.bicyclewebmodule.action.forward.ForwardTypeAdapter;
 import com.wxxiaomi.ming.bicyclewebmodule.action.forward.H5ACtion;
@@ -21,7 +26,8 @@ import com.wxxiaomi.ming.bicyclewebmodule.action.forward.ManyH5Action;
 import com.wxxiaomi.ming.bicyclewebmodule.action.forward.NativeAction;
 import com.wxxiaomi.ming.bicyclewebmodule.service.WebMethods;
 import com.wxxiaomi.ming.bicyclewebmodule.support.cache.CacheEngine;
-import com.wxxiaomi.ming.bicyclewebmodule.ui.WebTabsActivity;
+import com.wxxiaomi.ming.bicyclewebmodule.ui.base.BaseWebActivity2;
+import com.wxxiaomi.ming.bicyclewebmodule.ui_3.TestWebActivity;
 import com.wxxiaomi.ming.bicyclewebmodule.util.ParsMakeUtil;
 
 import java.io.ByteArrayInputStream;
@@ -34,36 +40,20 @@ import rx.functions.Action1;
 
 /**
  * Created by Administrator on 2016/12/1.
- * 基类
  */
-public abstract class BaseBuilderImpl implements WebBuilder {
-    protected Context context;
-    protected BridgeWebView mWebView;
+
+public abstract class ComBuildImpl extends BuilderDetail {
+
+    protected ProgressDialog dialog;
+    protected AlertDialog alertDialog;
 
     Map<Integer,String> list = new HashMap<>();
-
-    public BaseBuilderImpl(Context context) {
-        this.context = context;
+    protected ComBuildImpl(Context context) {
+        super(context);
+        dialog = new ProgressDialog(context);
+        dialog.setTitle("请等待");//设置标题
+        dialog.setMessage("正在加载");
     }
-
-    @Override
-    public BridgeWebView buildWebView() {
-        mWebView = new BridgeWebView(context);
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        mWebView.setLayoutParams(p);
-        return mWebView;
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-
-
 
     @Override
     public void doPost(String data, final CallBackFunction function) {
@@ -130,13 +120,6 @@ public abstract class BaseBuilderImpl implements WebBuilder {
         Log.i("wang","(js)"+data);
     }
 
-
-
-//    @Override
-//    public ViewGroup getContentView() {
-//        return allView;
-//    }
-
     @Override
     public void doForwardEvent(String data, CallBackFunction function) {
         Gson gson = new GsonBuilder().registerTypeAdapter(ForwardAction.class, new ForwardTypeAdapter()).create();
@@ -145,6 +128,7 @@ public abstract class BaseBuilderImpl implements WebBuilder {
             H5ACtion action = (H5ACtion) forwardAction;
             Log.i("wang","action:"+action);
             Intent intent = new Intent(context,context.getClass());
+            intent.putExtra("many",false);
             if(action.data!=""){
                 intent.putExtra("data",action.data);
             }
@@ -168,10 +152,11 @@ public abstract class BaseBuilderImpl implements WebBuilder {
         }else if(forwardAction instanceof ManyH5Action){
             ManyH5Action action = (ManyH5Action) forwardAction;
             Log.i("wang","action:"+action.toString());
-            Intent intent = new Intent(context, WebTabsActivity.class);
+            Intent intent = new Intent(context, TestWebActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("action",action);
             intent.putExtra("value",bundle);
+            intent.putExtra("many",true);
             context.startActivity(intent);
         }
     }
@@ -218,5 +203,79 @@ public abstract class BaseBuilderImpl implements WebBuilder {
         String url = pars.get("url");
         pars.remove("url");
         return WebMethods.getInstance().sendPost(url, pars);
+    }
+
+    @Override
+    protected void doPictureTakeEvent(String data, CallBackFunction function) {
+
+    }
+
+    @Override
+    protected void registerOtherMethod() {
+
+    }
+
+    @Override
+    protected void doJsInitData(String data) {
+
+    }
+
+    @Override
+    protected void doDialogEvent(String data) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(DialogACtion.class, new DialogTypeAdapter()).create();
+        DialogACtion dialogAction = gson.fromJson(data, DialogACtion.class);
+        if(dialogAction instanceof LoadingAction){
+            LoadingAction action = (LoadingAction)dialogAction;
+            String title = action.title;
+            String content = action.content;
+            dialog.setTitle(title);
+            dialog.setMessage(content);
+            dialog.show();
+        }else if(dialogAction instanceof AlertAction){
+            final AlertAction action = (AlertAction)dialogAction;
+            Log.i("wang","AlertAction.toString()="+action.toString());
+            if(!action.okCallback.equals("")){
+                alertDialog = new AlertDialog.Builder(context)
+                        .setCancelable(false)
+                        .setNegativeButton(action.cancelMsg, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setPositiveButton(action.okMsg, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mWebView.callHandler(action.okCallback,"",null);
+                            }
+                        }).create();
+            }else{
+                alertDialog = new AlertDialog.Builder(context)
+                        .setPositiveButton(action.okMsg,null).create();
+
+            }
+            alertDialog.setTitle(action.title);
+            alertDialog.setMessage(action.content);
+            alertDialog.show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1){
+            if(data!=null) {
+                String pars = data.getStringExtra("value");
+                if (!pars.equals("")) {
+                    String callback = list.get(1);
+                    list.remove(String.valueOf(callback));
+                    mWebView.callHandler(callback, pars, null);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void doSumbitEvent(String data, CallBackFunction function) {
+
     }
 }

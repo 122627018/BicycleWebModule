@@ -90,9 +90,7 @@ public abstract class BaseWebActivity2 extends AppCompatActivity {
     }
 
     private void initCommonUI() {
-        dialog = new ProgressDialog(BaseWebActivity2.this);
-        dialog.setTitle("请等待");//设置标题
-        dialog.setMessage("正在加载");
+
         showLoadingDialog();
     }
     public void showLoadingDialog(){

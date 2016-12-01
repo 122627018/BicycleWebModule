@@ -47,7 +47,8 @@
         <activity android:name=".WebViewNewTry" />
         <activity android:name=".WebViewTry2Activity" />
         <activity android:name=".OOMTestActivity" />
-        <activity android:name=".ui_refactor.WebActivity"></activity>
+        <activity android:name=".ui_refactor.WebActivity" />
+        <activity android:name=".ui_3.TestWebActivity"></activity>
     </application>
 
 </manifest>

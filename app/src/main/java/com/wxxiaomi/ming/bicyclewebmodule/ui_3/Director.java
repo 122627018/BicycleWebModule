@@ -1,6 +1,9 @@
 package com.wxxiaomi.ming.bicyclewebmodule.ui_3;
 
+import android.content.Intent;
 import android.view.ViewGroup;
+
+import com.wxxiaomi.ming.bicyclewebmodule.ui_3.builder.Builder;
 
 /**
  * Created by Administrator on 2016/12/1.
@@ -17,12 +20,12 @@ public class Director {
     }
 
     public void PageInit(){
-        builder.registerMethod();
-        builder.initPageUI();
         builder.initPageData();
+        builder.registerMethod();
+
     }
 
-    public void onActivityResult(){
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        builder.onActivityResult(requestCode,resultCode,data);
     }
 }

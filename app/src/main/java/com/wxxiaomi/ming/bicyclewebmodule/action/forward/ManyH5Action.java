@@ -20,8 +20,15 @@ public class ManyH5Action extends ForwardAction {
         this.title = title;
         this.tabs = tabs;
     }
-    public ManyH5Action(){
 
+    @Override
+    public String toString() {
+        return "ManyH5Action{" +
+                "pages=" + pages +
+                ", datas=" + datas +
+                ", pageCount=" + pageCount +
+                ", title='" + title + '\'' +
+                ", tabs=" + tabs +
+                '}';
     }
-
 }
